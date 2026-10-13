@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#07111f">
+<title>Monis IC Check — Free Auto Scan</title>
+<style>
+:root{--bg:#07111f;--panel:#101e30;--panel2:#14263b;--line:#243950;--text:#edf5ff;--muted:#9db0c7;--cyan:#39d6d0;--warn:#ffca75;--ok:#9ff5d7}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#102a41 0,#07111f 48%,#050b14 100%);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;min-height:100vh}
+.wrap{max-width:980px;margin:auto;padding:18px 13px 32px}.top{display:flex;align-items:center;gap:11px;margin-bottom:18px}.logo{width:45px;height:45px;border-radius:14px;background:linear-gradient(140deg,var(--cyan),#7ae6d8);display:grid;place-items:center;color:#06131e;font-weight:900;font-size:21px}.brand{font-size:20px;font-weight:850}.sub{font-size:12px;color:var(--muted)}.pill{margin-left:auto;border:1px solid #2d4d62;color:#9ee9e2;padding:6px 9px;border-radius:99px;font-size:10px}
+.hero h1{font-size:clamp(27px,6vw,39px);line-height:1.1;margin:7px 0}.hero p{color:var(--muted);line-height:1.5;margin:0 0 17px}.panel{background:linear-gradient(160deg,#122238,#0c1828);border:1px solid var(--line);border-radius:22px;overflow:hidden;box-shadow:0 16px 50px #0003}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;padding:13px}.btn{border:0;border-radius:13px;min-height:49px;font-size:14px;font-weight:850;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}.primary{background:linear-gradient(110deg,var(--cyan),#7ae6d8);color:#06131e}.secondary{background:#1a2d44;border:1px solid #314a63;color:var(--text)}
+.camera{position:relative;background:#03070d;aspect-ratio:4/3;min-height:220px;display:grid;place-items:center;overflow:hidden}.camera video,.camera img{width:100%;height:100%;object-fit:contain;position:absolute;inset:0}.placeholder{color:var(--muted);text-align:center;padding:20px;pointer-events:none}.camera.active .placeholder{display:none}.frame{position:absolute;inset:18% 10%;border:1px solid #39d6d0aa;border-radius:12px;box-shadow:0 0 0 999px #02071130;pointer-events:none}.live{position:absolute;left:10px;top:10px;background:#081522dd;border:1px solid #315064;border-radius:99px;padding:6px 9px;font-size:10px;color:#a8fff4;z-index:3}.result{padding:16px}.result-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px}.result-head h2{font-size:16px;margin:0}.status{font-size:11px;color:var(--warn);border:1px solid #765c32;background:#49371e66;border-radius:99px;padding:6px 9px}.fields{display:grid;grid-template-columns:1fr 1fr;gap:9px}.field{background:#091524;border:1px solid #20344a;border-radius:13px;padding:12px}.field label{display:block;color:var(--muted);font-size:11px;margin-bottom:6px}.field strong{font-size:16px;overflow-wrap:anywhere}.marking{margin-top:10px;color:var(--muted);font-size:12px;line-height:1.55;overflow-wrap:anywhere}.marking b{color:var(--text)}.datasheet{display:none;margin-top:13px;padding:13px;background:#0b1c2a;border:1px solid #285064;border-radius:13px}.datasheet a{color:#8debe4;font-weight:750}.datasheet .small{font-size:11px;color:var(--muted);line-height:1.5;margin-top:7px}.manual{display:flex;gap:8px;margin-top:14px}.manual input{min-width:0;flex:1;background:#081524;color:var(--text);border:1px solid #30465d;border-radius:11px;padding:12px;font-size:14px}.manual button{padding:0 14px}.notice{padding:13px 15px;border-top:1px solid var(--line);font-size:11px;color:var(--muted);line-height:1.55}.notice strong{color:#cde7ff}.foot{text-align:center;color:#6f849e;font-size:11px;margin-top:15px}.hidden{display:none!important}
+@media(min-width:740px){.work{display:grid;grid-template-columns:1.05fr .95fr}.camera{height:100%;aspect-ratio:auto;min-height:370px}.result{padding:22px}}@media(max-width:360px){.pill{display:none}.btn{font-size:12px}}
+</style>
+</head>
+<body><main class="wrap">
+<header class="top"><div class="logo">IC</div><div><div class="brand">Monis IC Check</div><div class="sub">Free live scanner · Local reference database</div></div><div class="pill">NO PAID API</div></header>
+<section class="hero"><h1>IC सामने लाएँ,<br>datasheet खोजें.</h1><p>SCAN शुरू करें। कैमरा marking पढ़ने की कोशिश करेगा और local database में match मिलने पर datasheet reference अपने-आप दिखाएगा। इंटरनेट OCR library लोड करने के लिए चाहिए; कोई paid API key नहीं है।</p></section>
+<section class="panel">
+<div class="actions"><button id="scanBtn" class="btn primary">⌁ LIVE SCAN शुरू करें</button><button id="uploadBtn" class="btn secondary">↥ फोटो UPLOAD</button><input id="fileInput" type="file" accept="image/*" hidden></div>
+<div class="work"><div id="cameraBox" class="camera"><video id="video" autoplay playsinline muted class="hidden"></video><img id="preview" class="hidden" alt="IC preview"><div class="placeholder"><div style="font-size:38px">▦</div><b>Camera preview</b><div style="font-size:12px;margin-top:6px">IC को frame के बीच रखें और कुछ सेकंड स्थिर रखें</div></div><div class="frame"></div><div id="liveTag" class="live hidden">● LIVE SCANNING</div></div>
+<div class="result"><div class="result-head"><h2>Scan result</h2><span id="status" class="status">IC का इंतज़ार</span></div><div class="fields"><div class="field"><label>MEMORY TYPE</label><strong id="type">—</strong></div><div class="field"><label>CAPACITY</label><strong id="capacity">—</strong></div></div><div class="marking">Detected marking: <b id="marking">अभी नहीं पढ़ी</b></div><div id="message" class="marking">साफ़ marking दिखाएँ। वीडियो/Reel के screenshot से OCR गलत हो सकता है।</div>
+<div id="datasheet" class="datasheet"><b>Datasheet / reference</b><div id="sheetTitle" style="margin:7px 0"></div><a id="sheetLink" href="#" target="_blank" rel="noopener">Open reference ↗</a><div id="sheetNote" class="small"></div></div>
+<div class="manual"><input id="manualCode" placeholder="IC code खुद लिखें (जैसे K4B4G1646E)" autocomplete="off"><button id="searchBtn" class="btn secondary">Search</button></div>
+</div></div>
+<div class="notice"><strong>सटीकता:</strong> यह offline/local reference database छोटा है। Datasheet link उपलब्ध होने का अर्थ यह नहीं कि capacity पूरी तरह verify हो गई है। Unverified codes पर app अनुमान नहीं लगाएगा। Camera के लिए HTTPS और permission जरूरी है।</div>
+</section><div class="foot">Monis IC Check · Free prototype · No login · No paid API</div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<script>
+/* Local entries. Only verified=true entries are allowed to display confirmed specs.
+   Search links are manufacturer/search references, not claims that every result is the exact datasheet. */
+const DB=[
+ {code:'H26M41204HPR',aliases:['H26M41204HPR'],maker:'SK hynix',type:'e-NAND',capacity:'Not confirmed from this marking alone',verified:false,link:'https://www.google.com/search?q=site%3A skhynix.com+H26M41204HPR+datasheet',title:'Search SK hynix official documentation',note:'Marking read from chip; exact capacity needs exact datasheet confirmation.'},
+ {code:'K4B4G1646E',aliases:['K4B4G1646E','K4B4G1646'],maker:'Samsung',type:'DDR3 SDRAM',capacity:'4 Gb (part-family indication)',verified:false,link:'https://www.google.com/search?q=Samsung+K4B4G1646E+datasheet',title:'Samsung K4B4G1646E datasheet search',note:'Check suffix/package variant before treating density as confirmed.'},
+ {code:'K4A8G165WC',aliases:['K4A8G165WC'],maker:'Samsung',type:'DDR4 SDRAM',capacity:'8 Gb (part-family indication)',verified:false,link:'https://www.google.com/search?q=Samsung+K4A8G165WC+datasheet',title:'Samsung K4A8G165WC datasheet search',note:'Capacity is in gigabits, not gigabytes; exact variant verification required.'},
+ {code:'K4D263238G-VC33',aliases:['K4D263238G','K4D263238GVC33'],maker:'Samsung',type:'Graphics DDR SDRAM (candidate)',capacity:'Unconfirmed',verified:false,link:'https://www.google.com/search?q=Samsung+K4D263238G-VC33+datasheet',title:'Samsung part-number datasheet search',note:'Do not rely on OCR alone; verify the complete marking.'},
+ {code:'K7I161882B-EC16',aliases:['K7I161882B','K7I161882BEC16'],maker:'Samsung',type:'Memory IC (candidate)',capacity:'Unconfirmed',verified:false,link:'https://www.google.com/search?q=Samsung+K7I161882B-EC16+datasheet',title:'Samsung part-number datasheet search',note:'Exact type/capacity not confirmed.'},
+ {code:'KLM8G2JETD',aliases:['KLM8G2JETD'],maker:'Samsung',type:'eMMC (candidate)',capacity:'Unconfirmed',verified:false,link:'https://www.google.com/search?q=Samsung+KLM8G2JETD+datasheet',title:'Samsung part-number datasheet search',note:'Full marking and datasheet revision must be checked.'},
+ {code:'KLUC2K1EA',aliases:['KLUC2K1EA'],maker:'Samsung',type:'eMMC (candidate)',capacity:'Unconfirmed',verified:false,link:'https://www.google.com/search?q=Samsung+KLUC2K1EA+datasheet',title:'Samsung part-number datasheet search',note:'Capacity claim from social-video text is not verified.'},
+ {code:'KLUEG8UHGC',aliases:['KLUEG8UHGC'],maker:'Samsung',type:'eMMC (candidate)',capacity:'Unconfirmed',verified:false,link:'https://www.google.com/search?q=Samsung+KLUEG8UHGC+datasheet',title:'Samsung part-number datasheet search',note:'Capacity claim from social-video text is not verified.'},
+ {code:'KLUFG8R1EM',aliases:['KLUFG8R1EM'],maker:'Samsung',type:'eMMC (candidate)',capacity:'Unconfirmed',verified:false,link:'https://www.google.com/search?q=Samsung+KLUFG8R1EM+datasheet',title:'Samsung part-number datasheet search',note:'Capacity claim from social-video text is not verified.'},
+ {code:'KLUBG4G1CE',aliases:['KLUBG4G1CE'],maker:'Samsung',type:'eMMC (candidate)',capacity:'Unconfirmed',verified:false,link:'https://www.google.com/search?q=Samsung+KLUBG4G1CE+datasheet',title:'Samsung part-number datasheet search',note:'Capacity claim from social-video text is not verified.'},
+ {code:'KLUDG8V1EE',aliases:['KLUDG8V1EE'],maker:'Samsung',type:'eMMC (candidate)',capacity:'Unconfirmed',verified:false,link:'https://www.google.com/search?q=Samsung+KLUDG8V1EE+datasheet',title:'Samsung part-number datasheet search',note:'Capacity claim from social-video text is not verified.'},
+ {code:'RS70B64G4',aliases:['RS70B64G4'],maker:'Rayson',type:'Unconfirmed',capacity:'Unconfirmed',verified:false,link:'https://www.google.com/search?q=RS70B64G4+datasheet',title:'Part-number datasheet search',note:'Earlier 64 GB claim has not been verified.'},
+ {code:'6PA98',aliases:['6PA98','JW614'],maker:'Micron (logo visible)',type:'Unknown from short top-mark',capacity:'Unknown',verified:false,link:'https://www.micron.com/support/tools-and-utilities/fbga',title:'Micron FBGA part-marking decoder',note:'6PA98/JW614 may be abbreviated top marks; more package/board information may be needed.'}
+];
+const $=id=>document.getElementById(id);let stream=null,worker=null,timer=null,busy=false,lastKey='',sameCount=0;
+function norm(s){return (s||'').toUpperCase().replace(/[^A-Z0-9]/g,'')}
+function hideSheet(){$('datasheet').style.display='none'}
+function renderEntry(item,matchedCode){
+ $('marking').textContent=matchedCode||item.code;$('type').textContent=item.type;$('capacity').textContent=item.capacity;
+ $('status').textContent=item.verified?'Verified local match':'Reference found · verify';$('status').style.color=item.verified?'#9ff5d7':'#ffca75';
+ $('message').textContent=item.verified?'Verified local database entry matched.':'Local code match. Check the manufacturer document before relying on type/capacity.';
+ $('datasheet').style.display='block';$('sheetTitle').textContent=item.maker+' — '+item.title;$('sheetLink').href=item.link;$('sheetNote').textContent=item.note;
+}
+function findEntry(text){
+ const n=norm(text); if(!n)return null;
+ const list=DB.slice().sort((a,b)=>Math.max(...b.aliases.map(x=>norm(x).length))-Math.max(...a.aliases.map(x=>norm(x).length)));
+ for(const item of list){for(const a of item.aliases){const key=norm(a);if(key.length>=6&&n.includes(key))return {item,code:a};}}
+ // Tolerate a single OCR substitution only for long known part codes.
+ for(const item of list){for(const a of item.aliases){const key=norm(a);if(key.length<9)continue;for(let i=0;i<=n.length-key.length;i++){let seg=n.slice(i,i+key.length),diff=0;for(let j=0;j<key.length;j++)if(key[j]!==seg[j])diff++;if(diff===1)return {item,code:a};}}}
+ return null;
+}
+function resetUnknown(text){
+ $('marking').textContent=(text||'').replace(/\s+/g,' ').trim().slice(0,100)||'Text not detected';$('type').textContent='Unknown';$('capacity').textContent='Unknown';$('status').textContent='No local match';$('status').style.color='#ffca75';$('message').textContent='Local database में match नहीं मिला। साफ़ फोटो रखें या IC code नीचे खुद लिखें।';hideSheet();
+}
+function matchText(text){const found=findEntry(text);if(found)renderEntry(found.item,found.code);else resetUnknown(text)}
+async function getWorker(){if(!window.Tesseract)throw new Error('OCR engine load नहीं हुआ। Internet connection जाँचें।');if(!worker)worker=await Tesseract.createWorker('eng');return worker}
+function sources(src){
+ const w=src.videoWidth||src.naturalWidth||src.width,h=src.videoHeight||src.naturalHeight||src.height;if(!w||!h)return [src];
+ const crop=(x,y,cw,ch,scale=2,threshold=false)=>{const c=document.createElement('canvas');c.width=Math.round(cw*scale);c.height=Math.round(ch*scale);const xctx=c.getContext('2d',{willReadFrequently:true});xctx.imageSmoothingQuality='high';xctx.drawImage(src,x,y,cw,ch,0,0,c.width,c.height);const im=xctx.getImageData(0,0,c.width,c.height),d=im.data;for(let i=0;i<d.length;i+=4){let g=.299*d[i]+.587*d[i+1]+.114*d[i+2];let v=threshold?(g>145?255:0):Math.max(0,Math.min(255,(g-95)*1.6+95));d[i]=d[i+1]=d[i+2]=v}xctx.putImageData(im,0,0);return c};
+ const x=w*.12,y=h*.15,cw=w*.76,ch=h*.70;return [crop(x,y,cw,ch,2,false),crop(x,y,cw,ch,3,true),src];
+}
+async function readImage(src){
+ if(busy)return;busy=true;$('status').textContent='Reading chip…';
+ try{const ocr=await getWorker();let best='',found=null;for(const im of sources(src)){const r=await ocr.recognize(im);const t=r.data.text||'';if(t.length>best.length)best=t;found=findEntry(t);if(found)break;}
+ if(found)renderEntry(found.item,found.code);else matchText(best);
+ }catch(e){$('status').textContent='OCR unavailable';$('message').textContent=e.message||'OCR error';}finally{busy=false}
+}
+async function tick(){if(!stream||busy)return;const v=$('video');if(v.readyState<2)return;const c=document.createElement('canvas');c.width=v.videoWidth;c.height=v.videoHeight;c.getContext('2d').drawImage(v,0,0,c.width,c.height);await readImage(c)}
+async function start(){stop();try{if(!navigator.mediaDevices?.getUserMedia)throw Error('Camera requires HTTPS and browser permission.');stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720}},audio:false});$('video').srcObject=stream;$('video').classList.remove('hidden');$('preview').classList.add('hidden');$('cameraBox').classList.add('active');$('liveTag').classList.remove('hidden');$('scanBtn').textContent='■ SCAN बंद करें';$('message').textContent='IC को frame में स्थिर रखें। matching मिलने पर reference अपने-आप दिखेगा।';timer=setInterval(tick,4500);setTimeout(tick,1300)}catch(e){$('status').textContent='Camera unavailable';$('message').textContent=e.message}}
+function stop(){if(timer){clearInterval(timer);timer=null}if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}$('video').srcObject=null;$('video').classList.add('hidden');$('liveTag').classList.add('hidden');$('scanBtn').textContent='⌁ LIVE SCAN शुरू करें'}
+$('scanBtn').onclick=()=>stream? (stop(),$('cameraBox').classList.remove('active')):start();
+$('uploadBtn').onclick=()=>$('fileInput').click();
+$('fileInput').onchange=async e=>{const f=e.target.files?.[0];if(!f)return;stop();const u=URL.createObjectURL(f);$('preview').src=u;$('preview').classList.remove('hidden');$('video').classList.add('hidden');$('cameraBox').classList.add('active');await readImage($('preview'));e.target.value=''};
+function manualSearch(){const code=$('manualCode').value.trim();if(!code)return;const found=findEntry(code);if(found)renderEntry(found.item,found.code);else resetUnknown(code)}
+$('searchBtn').onclick=manualSearch;$('manualCode').addEventListener('keydown',e=>{if(e.key==='Enter')manualSearch()});window.addEventListener('pagehide',stop);
+</script></body></html>

@@ -1,0 +1,14 @@
+code,manufacturer,memory_type,capacity,verified,reference_url,notes
+H26M41204HPR,SK hynix,e-NAND,Unconfirmed,FALSE,https://www.google.com/search?q=H26M41204HPR+datasheet,Confirm exact part and capacity
+K4B4G1646E,Samsung,DDR3 SDRAM,4 Gb family indication,FALSE,https://www.google.com/search?q=Samsung+K4B4G1646E+datasheet,Check suffix and manufacturer document
+K4A8G165WC,Samsung,DDR4 SDRAM,8 Gb family indication,FALSE,https://www.google.com/search?q=Samsung+K4A8G165WC+datasheet,Capacity unit is Gb not GB; verify exact variant
+K4D263238G-VC33,Samsung,Graphics DDR SDRAM candidate,Unconfirmed,FALSE,https://www.google.com/search?q=Samsung+K4D263238G-VC33+datasheet,Verify full marking
+K7I161882B-EC16,Samsung,Memory IC candidate,Unconfirmed,FALSE,https://www.google.com/search?q=Samsung+K7I161882B-EC16+datasheet,Verify full part number
+KLM8G2JETD,Samsung,eMMC candidate,Unconfirmed,FALSE,https://www.google.com/search?q=Samsung+KLM8G2JETD+datasheet,Verify full marking
+KLUC2K1EA,Samsung,eMMC candidate,Unconfirmed,FALSE,https://www.google.com/search?q=Samsung+KLUC2K1EA+datasheet,Capacity claims from social video unverified
+KLUEG8UHGC,Samsung,eMMC candidate,Unconfirmed,FALSE,https://www.google.com/search?q=Samsung+KLUEG8UHGC+datasheet,Capacity claims from social video unverified
+KLUFG8R1EM,Samsung,eMMC candidate,Unconfirmed,FALSE,https://www.google.com/search?q=Samsung+KLUFG8R1EM+datasheet,Capacity claims from social video unverified
+KLUBG4G1CE,Samsung,eMMC candidate,Unconfirmed,FALSE,https://www.google.com/search?q=Samsung+KLUBG4G1CE+datasheet,Capacity claims from social video unverified
+KLUDG8V1EE,Samsung,eMMC candidate,Unconfirmed,FALSE,https://www.google.com/search?q=Samsung+KLUDG8V1EE+datasheet,Capacity claims from social video unverified
+RS70B64G4,Rayson,Unknown,Unconfirmed,FALSE,https://www.google.com/search?q=RS70B64G4+datasheet,Earlier capacity claim unverified
+6PA98 / JW614,Micron logo visible,Unknown from short top-mark,Unknown,FALSE,https://www.micron.com/support/tools-and-utilities/fbga,Use official Micron marking decoder
